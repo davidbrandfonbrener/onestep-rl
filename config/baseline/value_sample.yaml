@@ -1,0 +1,7 @@
+# @package baseline
+
+_target_: baseline_learner.SampledValueBaseline
+name: value_sample
+
+device: ${device}
+n_samples: 10

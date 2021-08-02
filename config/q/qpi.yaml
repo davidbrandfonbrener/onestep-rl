@@ -1,0 +1,25 @@
+# @package q
+
+_target_: q_learner.QPiLearner
+name: qpi
+
+model_save_path: ${path}/models/${name}_${q.name}_${env.domain}.pt
+
+device: ${device}
+discount: ${discount}
+
+# training parameters 
+batch_size: 512
+lr: 1e-4
+target_update_freq: 2
+tau: 0.005
+
+state_dim: ${state_dim}
+action_dim: ${action_dim}
+
+# model parameters
+width: 1024
+depth: 2
+
+# logging
+format_str: "Q Train: Step {values[step]:8.0f}, Loss {values[loss]:2.6f}, MSE {values[mse]:4.4f}, Pred Mean {values[pred_mean]:4.4f}, Rollout Mean {values[rollout_mean]:4.4f}"

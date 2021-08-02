@@ -1,0 +1,25 @@
+# @package _global_
+name: eval
+
+path: ???
+
+env_name: halfcheetah-medium-v2
+pi_name: beta
+alg_name: onestep
+seed: 0
+
+# hydra parameters
+hydra/hydra_logging: none
+hydra/job_logging: none
+hydra:
+  output_subdir: null
+  run:
+    dir: .
+  # sweep:
+  #   dir: ./output/${hydra.job.override_dirname}
+  #   subdir: ${hydra.job.num}
+  job:
+    config:
+      override_dirname:
+        exclude_keys:
+          - name

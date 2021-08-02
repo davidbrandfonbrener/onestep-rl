@@ -1,0 +1,72 @@
+# @package _global_
+name: train_${env.name}_${seed}
+
+path: /Users/davidbrandfonbrener/code/onestep-rl # ???
+
+defaults:
+  - beta: beta_bc
+  - q: qpi
+  - pi: pi_reverse_kl
+  - baseline: value_sample
+
+# which learners to train
+train_beta: true
+train_q: true
+train_pi: true
+train_baseline: false
+
+# model params
+beta:
+  load_path: null
+q:
+  load_path: null
+  model_save_path: ${path}/models/${name}_q
+pi:
+  load_path: null
+  model_save_path: ${path}/models/${name}_pi
+baseline:
+  load_path: null
+  model_save_path: ${path}/models/${name}_baseline
+
+# train loop hyperparameters
+betasteps: 5e5
+steps: 1
+qsteps: 2e6
+pisteps: 1e5
+
+beta_save_freq: 1e5
+pi_save_freq: 1e6
+q_save_freq: 1e6
+log_freq: 2e3
+
+eval_samples: 1000
+eval_episodes: 1
+log_dir: ${path}/logs/${name}
+
+seed: 0
+device: cpu
+
+# data parameters
+data_path: ${path}/data/${env.name}.pt
+env_type: d4rl
+env:
+  name: halfcheetah-medium-v2
+discount: 0.99
+state_dim: ???
+action_dim: ???
+
+# hydra parameters
+hydra/hydra_logging: none
+hydra/job_logging: none
+hydra:
+  output_subdir: null
+  run:
+    dir: .
+  # sweep:
+  #   dir: ./output/${hydra.job.override_dirname}
+  #   subdir: ${hydra.job.num}
+  job:
+    config:
+      override_dirname:
+        exclude_keys:
+          - name

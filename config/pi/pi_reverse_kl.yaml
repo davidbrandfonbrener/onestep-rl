@@ -1,0 +1,28 @@
+# @package pi
+
+_target_: policy_learner.ReverseKLRegLearner
+name: pi_reverse_kl
+
+load_path: null
+model_save_path: ${path}/models/${name}_${pi.name}_${env.domain}.pt
+
+device: ${device}
+discount: ${discount}
+
+# alg specific parameters
+alpha: 1.0
+n_samples: 10
+
+# training parameters 
+batch_size: 512
+lr: 1e-4
+state_dim: ${state_dim}
+action_dim: ${action_dim}
+
+# model parameters
+width: 1024
+depth: 2
+dist_type: trunc
+
+# logging 
+format_str: "Pi Train: Step {values[step]:8.0f}, Loss {values[loss]:2.6f}, Eval Return {values[return]:4.4f}, Entropy {values[entropy]:4.4f}, Q Val {values[qval]:4.4f}, KL {values[kl]:4.4f}"

@@ -1,0 +1,25 @@
+# @package beta
+
+_target_: policy_learner.BCLearner
+name: beta_bc
+
+model_save_path: ${path}/models/${name}_${beta.name}_${env.name}.pt
+
+device: ${device}
+discount: ${discount}
+
+logger_type: beta
+
+# training parameters 
+batch_size: 512
+lr: 1e-4
+state_dim: ${state_dim}
+action_dim: ${action_dim}
+
+# model parameters
+width: 1024
+depth: 2
+dist_type: normal
+
+# logging
+format_str: "Beta Train: Step {values[step]:8.0f}, Loss {values[loss]:2.6f}, Eval Return {values[return]:4.4f}, Entropy {values[entropy]:4.4f}"
