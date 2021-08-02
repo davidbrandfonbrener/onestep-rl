@@ -1,11 +1,11 @@
 # Dependencies
 
-- python 3.7
-- pytorch 1.7.1
-- hydra 1.0
-- d4rl
-- gym
-- mujoco
+This repo depends on [pytorch](https://pytorch.org/get-started/locally/) (version 1.9.0) and [mujoco](https://www.roboti.us/index.html) (version 200). I am running python 3.7 on my system. 
+
+Other requirements can be installed via pip by running:
+```
+pip install -r requirements.txt
+```
 
 # Running the code
 
