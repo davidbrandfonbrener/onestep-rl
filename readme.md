@@ -15,9 +15,9 @@ Data must be saved into a replay buffer in the ```data/``` directory by running 
 
 ## Training
 
-The train loop is in ```train.py``` which can capture all algorithms by varying parameters as described below.
+The train loop is in ```train.py``` which can capture all algorithms in the paper by varying parameters as described below.
 
-**Important**: to run the training files, you need to including the path from the root to the ```onestep-rl``` directory on your machine as the ```path``` variable in the corresponding config file, e.g. ```/path/to/onestep-rl```.
+<u>**Important**</u>: to run the training files, you need to including the path from the root to the ```onestep-rl``` directory on your machine as the ```path``` variable in the corresponding config file, e.g. ```/path/to/onestep-rl```.
 
 ### Setting the training loop hyperparameters
 Config files with all the relevant hyperparameters can be found in the ```config/``` directory. 
