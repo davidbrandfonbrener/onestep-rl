@@ -5,7 +5,7 @@ path: ???
 
 defaults:
   - beta: beta_bc
-  - q: qpi
+  - q: qbeta
   - pi: pi_reverse_kl
   - baseline: value_sample
 
