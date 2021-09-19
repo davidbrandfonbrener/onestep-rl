@@ -24,24 +24,24 @@ Config files with all the relevant hyperparameters can be found in the ```config
 
 To get the one-step algorithm from the paper we set the following parameters of the training loop in ```config/train.yaml```:
 ```
-betasteps: 5e5
+beta_steps: 5e5
 steps: 1
-qsteps: 2e6
-pisteps: 1e5
+qs_teps: 2e6
+pi_steps: 1e5
 ```
 To get the iterative algorithms we load the pre-trained beta and q estimators used by the one-step algorithm and then run
 ```
-betasteps: 0
+beta_steps: 0
 steps: 1e5
-qsteps: 2
-pisteps: 1
+q_steps: 2
+pi_steps: 1
 ```
 For the multi-step algorithms we load the pre-trained beta and q estimators used by the one-step algorithm and then run
 ```
-betasteps: 0
+beta_steps: 0
 steps: 5
-qsteps: 2e5
-pisteps: 2e4
+q_steps: 2e5
+pi_steps: 2e4
 ```
 
 ## Figures
