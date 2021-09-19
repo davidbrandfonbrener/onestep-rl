@@ -1,19 +1,19 @@
 # @package _global_
 name: train_${env.name}_${seed}
 
-path: /Users/davidbrandfonbrener/code/onestep-rl #???
+path: ???
 
 defaults:
   - beta: bc
   - q: sarsa
   - pi: reverse_kl
-  - baseline: td #value_sample
+  - baseline: value_sample
 
 # which learners to train
 train_beta: true
 train_q: true
 train_pi: true
-train_baseline: true
+train_baseline: false
 
 # model params
 beta:
@@ -29,11 +29,11 @@ baseline:
   model_save_path: ${path}/models/${name}_baseline
 
 # train loop hyperparameters
-beta_steps: 10 #5e5
-baseline_steps: 1e5 #0
+beta_steps: 5e5
+baseline_steps: 0
 steps: 1
-q_steps: 10 #2e6
-pi_steps: 10 #1e5
+q_steps: 2e6
+pi_steps: 1e5
 
 beta_save_freq: 1e5
 pi_save_freq: 1e6
