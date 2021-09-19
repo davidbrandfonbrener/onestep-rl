@@ -43,6 +43,7 @@ def train(cfg):
     q.set_logger(logger)
     pi.set_logger(logger)
     beta.set_logger(logger)
+    baseline.set_logger(logger)
 
     # train
     if cfg.pi.name == 'pi_easy_bcq':
@@ -51,13 +52,25 @@ def train(cfg):
 
     # train beta
     if cfg.train_beta:
-        for step in range(int(cfg.betasteps)):
+        for step in range(int(cfg.beta_steps)):
             beta.train_step(replay, None, None, None)
 
             if step % int(cfg.log_freq) == 0:
-                logger.update('betatrain/step', step)
+                logger.update('beta/step', step)
                 beta.eval(env, cfg.eval_episodes)
-                logger.write_sub_meter('betatrain')
+                logger.write_sub_meter('beta')
+            if step % int(cfg.beta_save_freq) == 0:
+                beta.save(cfg.beta.model_save_path + '_' + str(step) + '.pt')
+
+    # train baseline
+    if cfg.train_baseline:
+        for step in range(int(cfg.baseline_steps)):
+            baseline.train_step(replay)
+
+            if step % int(cfg.log_freq) == 0:
+                logger.update('baseline/step', step)
+                baseline.eval(env, beta, cfg.eval_episodes)
+                logger.write_sub_meter('baseline')
             if step % int(cfg.beta_save_freq) == 0:
                 beta.save(cfg.beta.model_save_path + '_' + str(step) + '.pt')
 
@@ -68,41 +81,37 @@ def train(cfg):
     for out_step in range(int(cfg.steps)):        
         # train Q
         if cfg.train_q:
-            for in_step in range(int(cfg.qsteps)):
-                step = out_step * int(cfg.qsteps) + in_step 
-                
+            for in_step in range(int(cfg.q_steps)): 
                 q.train_step(replay, pi, beta)
                 
-                if step % q.target_update_freq == 0:
-                    q.update_target()
-                
+                step = out_step * int(cfg.q_steps) + in_step 
                 if step % int(cfg.log_freq) == 0:
-                    logger.update('qtrain/step', step)
-                    q.eval_env(env, pi, cfg.eval_episodes)
-                    logger.write_sub_meter('qtrain')
+                    logger.update('q/step', step)
+                    q.eval(env, pi, cfg.eval_episodes)
+                    logger.write_sub_meter('q')
                 
                 if step % int(cfg.q_save_freq) == 0:
                     q.save(cfg.q.model_save_path + '_' + str(step) + '.pt')
 
         # train pi
         if cfg.train_pi and cfg.pi.name != 'pi_easy_bcq':
-            for in_step in range(int(cfg.pisteps)):
+            for in_step in range(int(cfg.pi_steps)):
                 pi.train_step(replay, q, baseline, beta)
 
-                step = out_step * int(cfg.pisteps) + in_step
+                step = out_step * int(cfg.pi_steps) + in_step
                 if step % int(cfg.log_freq) == 0:
-                    logger.update('pitrain/step', step)
+                    logger.update('pi/step', step)
                     pi.eval(env, cfg.eval_episodes)
-                    logger.write_sub_meter('pitrain')
+                    logger.write_sub_meter('pi')
                 if step % int(cfg.pi_save_freq) == 0:
                     pi.save(cfg.pi.model_save_path + '_' + str(step) + '.pt')
         elif cfg.pi.name == 'pi_easy_bcq':
             step = out_step + 1
             pi.update_q(q)
             if step % int(cfg.log_freq) == 0:
-                logger.update('pitrain/step', step)
+                logger.update('pi/step', step)
                 pi.eval(env, cfg.eval_episodes)
-                logger.write_sub_meter('pitrain')
+                logger.write_sub_meter('pi')
     
     if cfg.train_q:
         q.save(cfg.q.model_save_path + '.pt')
@@ -113,21 +122,27 @@ def train(cfg):
 def setup_logger(cfg):
     logger_dict = dict()
     if cfg.train_q:
-        q_train_dict = {'qtrain': {
-                        'csv_path': f'{cfg.log_dir}/qtrain.csv',
+        q_train_dict = {'q': {
+                        'csv_path': f'{cfg.log_dir}/q.csv',
                         'format_str': cfg.q.format_str,
                     },} 
         logger_dict.update(q_train_dict)
     if cfg.train_pi or cfg.pi.name == 'pi_easy_bcq':
-        pi_train_dict = {'pitrain': {
-                        'csv_path': f'{cfg.log_dir}/pitrain.csv',
+        pi_train_dict = {'pi': {
+                        'csv_path': f'{cfg.log_dir}/pi.csv',
                         'format_str': cfg.pi.format_str,
                     },} 
         logger_dict.update(pi_train_dict)
     if cfg.train_beta:
-        beta_train_dict = {'betatrain': {
-                        'csv_path': f'{cfg.log_dir}/betatrain.csv',
+        beta_train_dict = {'beta': {
+                        'csv_path': f'{cfg.log_dir}/beta.csv',
                         'format_str': cfg.beta.format_str,
+                    },} 
+        logger_dict.update(beta_train_dict)
+    if cfg.train_baseline:
+        beta_train_dict = {'baseline': {
+                        'csv_path': f'{cfg.log_dir}/baseline.csv',
+                        'format_str': cfg.baseline.format_str,
                     },} 
         logger_dict.update(beta_train_dict)
 

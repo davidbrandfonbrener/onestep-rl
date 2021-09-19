@@ -1,7 +1,7 @@
 # @package q
 
-_target_: q_learner.QBetaLearner
-name: qbeta
+_target_: q_learner.SarsaLearner
+name: sarsa
 
 model_save_path: ${path}/models/${name}_${q.name}_${env.domain}.pt
 

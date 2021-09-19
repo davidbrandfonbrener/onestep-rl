@@ -1,7 +1,7 @@
 # @package pi
 
 _target_: policy_learner.EasyBCQLearner
-name: pi_easy_bcq
+name: easy_bcq
 
 load_path: null
 model_save_path: ${path}/models/${name}_${pi.name}_${env.domain}.pt

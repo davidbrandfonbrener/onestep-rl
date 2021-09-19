@@ -2,11 +2,16 @@
 name: eval
 
 path: ???
+pi_path: ???
+q_path: ???
 
 env_name: halfcheetah-medium-v2
 pi_name: beta
-alg_name: onestep
+
 seed: 0
+n_episodes: 100
+
+n_bcq_samples: 10
 
 # hydra parameters
 hydra/hydra_logging: none
@@ -15,9 +20,6 @@ hydra:
   output_subdir: null
   run:
     dir: .
-  # sweep:
-  #   dir: ./output/${hydra.job.override_dirname}
-  #   subdir: ${hydra.job.num}
   job:
     config:
       override_dirname:

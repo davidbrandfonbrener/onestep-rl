@@ -1,7 +1,7 @@
 # @package beta
 
 _target_: policy_learner.BCLearner
-name: beta_bc
+name: bc
 
 model_save_path: ${path}/models/${name}_${beta.name}_${env.name}.pt
 

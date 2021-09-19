@@ -1,19 +1,19 @@
 # @package _global_
 name: train_${env.name}_${seed}
 
-path: ???
+path: /Users/davidbrandfonbrener/code/onestep-rl #???
 
 defaults:
-  - beta: beta_bc
-  - q: qbeta
-  - pi: pi_reverse_kl
-  - baseline: value_sample
+  - beta: bc
+  - q: sarsa
+  - pi: reverse_kl
+  - baseline: td #value_sample
 
 # which learners to train
 train_beta: true
 train_q: true
 train_pi: true
-train_baseline: false
+train_baseline: true
 
 # model params
 beta:
@@ -29,10 +29,11 @@ baseline:
   model_save_path: ${path}/models/${name}_baseline
 
 # train loop hyperparameters
-betasteps: 5e5
+beta_steps: 10 #5e5
+baseline_steps: 1e5 #0
 steps: 1
-qsteps: 2e6
-pisteps: 1e5
+q_steps: 10 #2e6
+pi_steps: 10 #1e5
 
 beta_save_freq: 1e5
 pi_save_freq: 1e6
@@ -62,9 +63,6 @@ hydra:
   output_subdir: null
   run:
     dir: .
-  # sweep:
-  #   dir: ./output/${hydra.job.override_dirname}
-  #   subdir: ${hydra.job.num}
   job:
     config:
       override_dirname:

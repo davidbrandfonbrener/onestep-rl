@@ -1,7 +1,7 @@
 # @package pi
 
 _target_: policy_learner.ReverseKLRegLearner
-name: pi_reverse_kl
+name: reverse_kl
 
 load_path: null
 model_save_path: ${path}/models/${name}_${pi.name}_${env.domain}.pt

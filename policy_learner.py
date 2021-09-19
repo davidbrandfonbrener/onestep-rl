@@ -94,7 +94,7 @@ class PiLearner(object):
             returns[episode] = ep_return
         ret = np.mean(returns)
         
-        self.logger.update(self.logger_type + 'train/return', ret)
+        self.logger.update(self.logger_type + '/return', ret)
         return ret
 
     def save(self, path):
@@ -121,14 +121,14 @@ class BCLearner(PiLearner):
         loss = (-log_prob).mean()
 
         with torch.no_grad():
-            self.logger.update(self.logger_type + 'train/loss', loss.item())
+            self.logger.update(self.logger_type + '/loss', loss.item())
             action = dist.rsample()
             log_prob = log_prob_func(dist, action) 
-            self.logger.update(self.logger_type + 'train/entropy', 
+            self.logger.update(self.logger_type + '/entropy', 
                                 -log_prob.mean().item())
             if q is not None:
                 qval = q.predict(transitions.s, action)
-                self.logger.update(self.logger_type + 'train/qval', 
+                self.logger.update(self.logger_type + '/qval', 
                                     qval.mean().item())
         return loss
 
@@ -142,10 +142,10 @@ class GreedyLearner(PiLearner):
         qval = q.predict(transitions.s, action)
         loss = (- qval).mean()
 
-        self.logger.update('pitrain/loss', loss.item())
+        self.logger.update('pi/loss', loss.item())
         log_prob = log_prob_func(dist, action) 
-        self.logger.update('pitrain/entropy', -log_prob.mean().item())
-        self.logger.update('pitrain/qval', qval.mean().item())
+        self.logger.update('pi/entropy', -log_prob.mean().item())
+        self.logger.update('pi/qval', qval.mean().item())
         return loss
 
 class ReverseKLRegLearner(PiLearner):
@@ -167,13 +167,13 @@ class ReverseKLRegLearner(PiLearner):
        
         loss = (- qval + self.alpha * kl).mean()
         
-        self.logger.update('pitrain/loss', loss.item())
-        self.logger.update('pitrain/entropy', -pi_log_prob.mean().item())
-        self.logger.update('pitrain/kl', kl.mean().item())
-        self.logger.update('pitrain/qval', qval.mean().item())
+        self.logger.update('pi/loss', loss.item())
+        self.logger.update('pi/entropy', -pi_log_prob.mean().item())
+        self.logger.update('pi/kl', kl.mean().item())
+        self.logger.update('pi/qval', qval.mean().item())
         return loss
 
-class MarwilLearner(PiLearner):
+class ExpWeightLearner(PiLearner):
     def __init__(self, temp, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.temp = temp
@@ -189,14 +189,14 @@ class MarwilLearner(PiLearner):
         weight = (self.temp * (qval - b)).exp().clamp(0, self.max_weight)
         loss = (- weight * IL_log_prob).mean()
 
-        self.logger.update('pitrain/loss', loss.item())
+        self.logger.update('pi/loss', loss.item())
         action = dist.sample()
         log_prob = log_prob_func(dist, action) 
-        self.logger.update('pitrain/entropy', -log_prob.mean().item())
-        self.logger.update('pitrain/imitation', -IL_log_prob.mean().item())
+        self.logger.update('pi/entropy', -log_prob.mean().item())
+        self.logger.update('pi/imitation', -IL_log_prob.mean().item())
         qval = q.predict(transitions.s, action)
-        self.logger.update('pitrain/qval', qval.mean().item())
-        self.logger.update('pitrain/advantage', (qval - b).mean().item())
+        self.logger.update('pi/qval', qval.mean().item())
+        self.logger.update('pi/advantage', (qval - b).mean().item())
         return loss
 
 class EasyBCQLearner(PiLearner):
@@ -246,11 +246,11 @@ class ILRegLearner(PiLearner):
         IL_log_prob = log_prob_func(dist, stable_action(transitions.a)) 
         loss = (- qval - self.alpha * IL_log_prob).mean()
 
-        self.logger.update('pitrain/loss', loss.item())
+        self.logger.update('pi/loss', loss.item())
         log_prob = log_prob_func(dist, action) 
-        self.logger.update('pitrain/entropy', -log_prob.mean().item())
-        self.logger.update('pitrain/imitation', -IL_log_prob.mean().item())
-        self.logger.update('pitrain/qval', qval.mean().item())
+        self.logger.update('pi/entropy', -log_prob.mean().item())
+        self.logger.update('pi/imitation', -IL_log_prob.mean().item())
+        self.logger.update('pi/qval', qval.mean().item())
         return loss
 
 
